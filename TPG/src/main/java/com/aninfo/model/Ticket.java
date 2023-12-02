@@ -42,7 +42,10 @@ public class Ticket {
     public void setClient(String client) {this.client = client;}
     public void setDescription(String description) {this.description = description;}
     public void setPriority(String priority) {this.priority = priority;}
-    public void updateState(String state){this.state = state;}
     public void setEndDate(LocalDateTime hour){this.endDate = hour;}
+    public void updateState(String state){this.state = state;}
+    public void updateDescription(String description){this.description = description;}
+    public void updatePriority(String priority ){this.priority = priority;}
+    public void updateSeverity(Integer severity ){this.severity = "S" + severity;}
 
 }

@@ -57,4 +57,47 @@ public class TicketService {
         return ticketOptional;
         }
     
+    public Optional<Ticket> modifyDescription(Long id, String description){
+
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+        if (ticketOptional.isEmpty()) {
+            throw new TicketNotFoundException("No se encontró el ticket");
+        }
+        Ticket ticket = ticketOptional.get();
+        if (ticket.getState() == "Resuelto") {
+            throw new TicketSolvedException("El ticket ya esta resuelto");
+        }
+        ticket.updateDescription(description);
+        ticketRepository.save(ticket);
+        return ticketOptional;
+    }
+
+    public Optional<Ticket> modifyPriority(Long id, String priority){
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+        if (ticketOptional.isEmpty()) {
+            throw new TicketNotFoundException("No se encontró el ticket");
+        }
+        Ticket ticket = ticketOptional.get();
+        if (ticket.getState() == "Resuelto") {
+            throw new TicketSolvedException("El ticket ya esta resuelto");
+        }
+        ticket.updatePriority(priority);
+        ticketRepository.save(ticket);
+        return ticketOptional;
+    }
+
+    public Optional<Ticket> modifySeverity(Long id, Integer severity){
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+        if (ticketOptional.isEmpty()) {
+            throw new TicketNotFoundException("No se encontró el ticket");
+        }
+        Ticket ticket = ticketOptional.get();
+        if (ticket.getState() == "Resuelto") {
+            throw new TicketSolvedException("El ticket ya esta resuelto");
+        }
+        ticket.updateSeverity(severity);
+        ticketRepository.save(ticket);
+        return ticketOptional;
+    }
 }

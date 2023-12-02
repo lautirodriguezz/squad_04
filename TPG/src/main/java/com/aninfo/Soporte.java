@@ -61,7 +61,7 @@ public class Soporte {
 		return ResponseEntity.of(ticket);
 	}
 
-	@PutMapping("/tickets/{id}")
+	@PutMapping("/tickets/updateState/{id}")
 	public ResponseEntity<Ticket> updateState(@PathVariable Long id, @RequestParam int state) {
 		Optional<Ticket> ticketOptional = ticketService.modifyState(id, this.parseState(state));
 		if (ticketOptional.isEmpty()) {
@@ -70,6 +70,42 @@ public class Soporte {
 		Ticket ticket = ticketOptional.get();
 		return ResponseEntity.ok(ticket);
 	}
+
+	@PutMapping("/tickets/updateDescription/{id}")
+	public ResponseEntity<Ticket> updateDescription(@PathVariable Long id, @RequestParam String description) {
+
+		Optional<Ticket> ticketOptional = ticketService.modifyDescription(id, description);
+		if (ticketOptional.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Ticket ticket = ticketOptional.get();
+		return ResponseEntity.ok(ticket);
+	}
+
+	@PutMapping("/tickets/updatePriority/{id}")
+	public ResponseEntity<Ticket> updatePriority(@PathVariable Long id, Integer priority) {
+		Optional<Ticket> ticketOptional = ticketService.modifyPriority(id, parsePriority(priority));
+		if (ticketOptional.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Ticket ticket = ticketOptional.get();
+		return ResponseEntity.ok(ticket);
+	}
+
+	@PutMapping("/tickets/updateSeverity/{id}")
+	public ResponseEntity<Ticket> updateSeverity(@PathVariable Long id, Integer severity) {
+
+		if((severity > 4) || (severity < 1)){
+            throw new InvalidSeverityException("Severidad incorrecta, debe ser menor a 4.");
+        }
+		Optional<Ticket> ticketOptional = ticketService.modifySeverity(id, severity);
+		if (ticketOptional.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Ticket ticket = ticketOptional.get();
+		return ResponseEntity.ok(ticket);
+	}
+
 
 	private String parseState(int newState) {
 		switch (newState) {
