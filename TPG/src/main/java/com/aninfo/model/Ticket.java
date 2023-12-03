@@ -14,8 +14,9 @@ public class Ticket {
     private String client;
     private String description;
     private String priority;    
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
+    private Long timeWork;
     
     public Ticket(){
     }
@@ -26,7 +27,15 @@ public class Ticket {
         this.client = client;
         this.description = description;
         this.priority = priority;
-        this.startDate = LocalDateTime.now();
+        String date = "" + LocalDateTime.now().getDayOfMonth();
+       
+        if(date.length() == 2){
+            this.startDate = ""+ LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() 
+                + "-" + LocalDateTime.now().getDayOfMonth();
+        } else {    
+            this.startDate = ""+ LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() 
+                        + "-0" + LocalDateTime.now().getDayOfMonth();
+        }
     }
 
     public Long getId() {return id;}
@@ -35,14 +44,16 @@ public class Ticket {
     public String getClient() {return client;}
     public String getDescription() {return description;}
     public String getPriority() {return priority;}
-    public LocalDateTime getStartDate() {return startDate;}
-    public LocalDateTime getEndDate() {return endDate;}
+    public String getStartDate() {return startDate;}
+    public String getEndDate() {return endDate;}
+    public Long getTimeWork() {return timeWork;}
 
     public void setSeverity(String severity) {this.severity = severity;}
     public void setClient(String client) {this.client = client;}
     public void setDescription(String description) {this.description = description;}
     public void setPriority(String priority) {this.priority = priority;}
-    public void setEndDate(LocalDateTime hour){this.endDate = hour;}
+    public void setEndDate(String hour){this.endDate = hour;}
+    public void setTimeWork(Long timeWork){this.timeWork = timeWork;}
     public void updateState(String state){this.state = state;}
     public void updateDescription(String description){this.description = description;}
     public void updatePriority(String priority ){this.priority = priority;}
