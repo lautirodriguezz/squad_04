@@ -34,6 +34,7 @@ public class Soporte {
 		SpringApplication.run(Soporte.class, args);
 	}
 
+//#region-PostMapping
 	@PostMapping("/tickets")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Ticket createTicket(@RequestParam Integer severity,@RequestParam String client,@RequestParam String description,@RequestParam Integer priority) {
@@ -43,15 +44,12 @@ public class Soporte {
         }
 		return ticketService.createTicket(severity, client, description, this.parsePriority(priority));
 	}
+//endregion-PostMapping
 
+//#region-GetMapping
 	@GetMapping("/tickets")
 	public Collection<Ticket> getTickets() {
 		return ticketService.getTickets();
-	}
-
-	@DeleteMapping("/tickets/{id}")
-	public void deleteTicketById(@PathVariable Long id) {
-		ticketService.deleteTicketByID(id);
 	}
 
 	@GetMapping("/tickets/{id}")
@@ -60,6 +58,19 @@ public class Soporte {
 		return ResponseEntity.of(ticket);
 	}
 
+	@GetMapping("/tickets/getFinishedTickets")
+	public Collection<Ticket> getTicketsFinished() {
+		return ticketService.getFinishedTickets();
+	}
+
+	@GetMapping("/tickets/getFinishedTickets{id}")
+	public ResponseEntity<Ticket> getTicketFinishedById(@PathVariable Long id) {
+		Optional<Ticket> ticket = ticketService.findFinishedTicketById(id);
+		return ResponseEntity.of(ticket);
+	}
+//#endregionGetMapping
+
+//#region-PutMapping
 	@PutMapping("/tickets/updateState/{id}")
 	public ResponseEntity<Ticket> updateState(@PathVariable Long id, @RequestParam int state) {
 		Optional<Ticket> ticketOptional = ticketService.modifyState(id, this.parseState(state));
@@ -104,8 +115,16 @@ public class Soporte {
 		Ticket ticket = ticketOptional.get();
 		return ResponseEntity.ok(ticket);
 	}
+//#endregionPutMapping
+	
+//#region-Delete
+	@DeleteMapping("/tickets/{id}")
+	public void deleteTicketById(@PathVariable Long id) {
+		ticketService.deleteTicketByID(id);
+	}
+//#endregion-Delete
 
-
+//#region-Private
 	private String parseState(int newState) {
 		switch (newState) {
 			case 1:
@@ -130,8 +149,9 @@ public class Soporte {
 				throw new InvalidPriorityException("Prioridad invalida. 1-Alta | 2-Media | 3-Baja");
 		}
 	}
+//#endregion-Private
 
-
+//#region-Docket
 	@Bean
 	public Docket apiDocket() {
 		return new Docket(DocumentationType.SWAGGER_2)
@@ -140,4 +160,5 @@ public class Soporte {
 			.paths(PathSelectors.any())
 			.build();
 	}
+//#endregion-Docket
 }
