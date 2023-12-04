@@ -3,7 +3,6 @@ package com.aninfo.service;
 import com.aninfo.exceptions.TicketNotFoundException;
 import com.aninfo.exceptions.TicketSolvedException;
 import com.aninfo.model.Ticket;
-import com.aninfo.repository.TicketFinishedRepository;
 import com.aninfo.repository.TicketRepository;
 // import com.aninfo.repository.TicketFinishedRepository;
 
@@ -14,7 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,8 +23,6 @@ public class TicketService {
     
     @Autowired
     private TicketRepository ticketRepository;
-    @Autowired
-    private TicketFinishedRepository ticketFinishedRepository;
 
     public Ticket createTicket(Integer severity,String client,String description,String priority){
 
@@ -31,16 +30,21 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    // public void save(Ticket ticket) {
-    //     ticketRepository.save(ticket);
-    // }
-
     public Collection<Ticket> getTickets(){
         return ticketRepository.findAll();
     }
 
     public Collection<Ticket> getFinishedTickets(){
-        return ticketFinishedRepository.findAll(); 
+
+        List<Ticket> ticketsFinished = new ArrayList<Ticket>();
+        List<Ticket> tickets = ticketRepository.findAll();
+
+        for (Ticket aTicket: tickets){
+            if(aTicket.getState().equals("Resuelto")){
+                ticketsFinished.add(aTicket);
+            }
+        }
+        return ticketsFinished;
     }
 
     public Optional<Ticket> findById(Long id) {
@@ -51,13 +55,26 @@ public class TicketService {
         return ticketOptional;
     }
 
-    public Optional<Ticket> findFinishedTicketById(Long id){
-        Optional<Ticket> ticketOptional = ticketFinishedRepository.findById(id);
+    public Collection<Ticket> findFinishedTicketById(Long id){
+
+        List<Ticket> ticket = new ArrayList<Ticket>();
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+
         if (ticketOptional.isEmpty()) {
             throw new TicketNotFoundException("No se encontró el ticket");
         }
-        return ticketOptional;
+        List<Ticket> tickets = ticketRepository.findAll();
+        for (Ticket aTicket: tickets){
+            if((aTicket.getState().equals("Resuelto")) && (aTicket.getId().equals(id))){
+                ticket.add(aTicket);
+            }
+        }
+        if(ticket.isEmpty()){
+            throw new TicketNotFoundException("Ticket no resuelto");
+        }
+        return ticket;
     }
+
 
     public Optional<Ticket> modifyState(Long id, String newState) {
         Optional<Ticket> ticketOptional = ticketRepository.findById(id);
@@ -72,7 +89,6 @@ public class TicketService {
             ticket.setEndDate(""+ LocalDateTime.now().getDayOfMonth() + "-" + LocalDateTime.now().getMonthValue() 
             + "-" + LocalDateTime.now().getYear());
             ticket.setTimeWork(this.setDifferenceBetweenDates(ticket.getStartDate()));
-            ticketFinishedRepository.save(ticket);
         }
         ticket.updateState(newState);
         ticketRepository.save(ticket);

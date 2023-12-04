@@ -64,9 +64,8 @@ public class Soporte {
 	}
 
 	@GetMapping("/tickets/getFinishedTickets{id}")
-	public ResponseEntity<Ticket> getTicketFinishedById(@PathVariable Long id) {
-		Optional<Ticket> ticket = ticketService.findFinishedTicketById(id);
-		return ResponseEntity.of(ticket);
+	public Collection<Ticket> getTicketFinishedById(@PathVariable Long id) {
+		return ticketService.findFinishedTicketById(id);
 	}
 //#endregionGetMapping
 
