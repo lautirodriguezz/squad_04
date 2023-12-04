@@ -73,7 +73,6 @@ public class TicketService {
             + "-" + LocalDateTime.now().getYear());
             ticket.setTimeWork(this.setDifferenceBetweenDates(ticket.getStartDate()));
             ticketFinishedRepository.save(ticket);
-            System.out.println("ADENTROOOOOO");
         }
         ticket.updateState(newState);
         ticketRepository.save(ticket);

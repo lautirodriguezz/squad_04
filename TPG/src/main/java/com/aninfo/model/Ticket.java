@@ -2,6 +2,7 @@ package com.aninfo.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Ticket {
@@ -17,6 +18,12 @@ public class Ticket {
     private String startDate;
     private String endDate;
     private Long timeWork;
+    @ManyToMany
+    @JoinTable(
+        name = "ticket_tarea",
+        joinColumns = @JoinColumn(name = "ticket_id"),
+        inverseJoinColumns = @JoinColumn(name = "tarea_id"))
+    private List<Tarea> tareas;
     
     public Ticket(){
     }
