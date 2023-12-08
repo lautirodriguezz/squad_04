@@ -7,6 +7,6 @@ RUN gradle build || return 1
 #
 FROM eclipse-temurin:17-jdk-jammy
 VOLUME /tmp
-COPY build/libs/*.jar app.jar
+COPY --from=BUILD_STAGE /home/gradle/build/libs/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8081
