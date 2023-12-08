@@ -1,5 +1,5 @@
 FROM gradle:jdk17-jammy AS BUILD_STAGE
-COPY --chown=gradle:gradle . /home/gradle
+COPY --chown=gradle:gradle TPG /home/gradle
 RUN gradle build || return 1
 
 #
